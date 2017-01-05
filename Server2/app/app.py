@@ -1,9 +1,9 @@
 from flask import Flask,redirect, url_for, Response, jsonify
 from flask import request
-from model1 import db
-from model1 import User
-from model1 import CreateDB
-from model1 import app as application
+from model import db
+from model import User
+from model import CreateDB
+from model import app as application
 import pickle
 
 import simplejson as json
@@ -11,18 +11,10 @@ from sqlalchemy.exc import IntegrityError
 import os
 import httplib
 from threading import Thread
+
 import redis
 
-
-MY_EXCEPTION = 'Threw Dependency Exception'
-# def port():
-# 		r = redis.Redis(host='localhost',port=6379 , db=0)
-# 		r.rpush('ports',5000)
-# 		return "5000 is inserted in redis"
-# port()
-
-
-
+print "this is starting"
 
 
 # initate flask app
@@ -30,22 +22,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def first():
-
-	try:
-		return " i am in root"
-	except Exception,e:
-		print "exc"
-
-
-	
+	return " i am in root"
 
 @app.route('/v1/expenses', methods= ['POST'])
 def set_post():
 	try:
-		# CreateDB(hostname = "localhost")
-		# db.create_all()
+		CreateDB(hostname = "mysqlserver")
+		db.create_all()
 		request_data = request.get_json(force=True)
-		id = request_data['id']
+
 		name = request_data['name']
 		email = request_data['email']
 		category = request_data['category']
@@ -56,13 +41,13 @@ def set_post():
 		status = "pending"
 		decision_date = ""
 		
-		expen = User(id,name,email,category,description,link,estimated_costs,submit_date,status,decision_date)
+		expen = User(name,email,category,description,link,estimated_costs,submit_date,status,decision_date)
 		db.session.add(expen)
 		db.session.commit()
 
-		# user_obj = User.query.filter_by(email=email).first()
-		# id2 = user_obj.id
-		dict2={'id':id,'name':name,'email':email,'category':category,'description':description,'link':link,'estimated_costs':estimated_costs,'submit_date':submit_date,'status':status,'decision_date':decision_date}
+		user_obj = User.query.filter_by(email=email).first()
+		id2 = user_obj.id
+		dict2={'id':id2,'name':name,'email':email,'category':category,'description':description,'link':link,'estimated_costs':estimated_costs,'submit_date':submit_date,'status':status,'decision_date':decision_date}
 		response1 = jsonify(dict2)
 		response1.status_code =201
 
@@ -129,7 +114,7 @@ def setup4(expense_id):
 		return Response(status=httplib.NO_CONTENT)
 		#return httplib.responses[httplib.NO_CONTENT]
 	except:
-		return "error in delete"
+		return "eerror in delete"
 	
 	
 
@@ -137,18 +122,16 @@ def setup4(expense_id):
 def app_status():
 	return json.dumps({'server_info':application.config['SQLALCHEMY_DATABASE_URI']})
 
-
-# @CircuitBreaker(max_failure_to_open=3, reset_timeout=3)
-# def dependency_call():
-# 	raise Exception(MY_EXCEPTION)
-
 # run app service 
 if __name__ == "__main__":
-	# def port():
-	# 	r = redis.Redis(host='redisContainer1',port=6379 , db=0)
-	# 	r.rpush('ports',5000)
-	# 	return "5000 is inserted in redis"
-	# port()
+	print "before calling port"
+	def port():
+		r = redis.Redis(host='localhost',port=6379)
+		r.rpush('ports',5000)
+		return "5000 is inserted in redis"
+	port()
+	
+	print "after calling port"
 
-	app.run(host="0.0.0.0",port =5000, debug=True,use_reloader=False)
+	app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
 

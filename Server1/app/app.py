@@ -11,18 +11,10 @@ from sqlalchemy.exc import IntegrityError
 import os
 import httplib
 from threading import Thread
+
 import redis
 
-
-MY_EXCEPTION = 'Threw Dependency Exception'
-# def port():
-# 		r = redis.Redis(host='localhost',port=6379 , db=0)
-# 		r.rpush('ports',5000)
-# 		return "5000 is inserted in redis"
-# port()
-
-
-
+print "this is starting"
 
 
 # initate flask app
@@ -30,19 +22,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def first():
-
-	try:
-		return " i am in root"
-	except Exception,e:
-		print "exc"
-
-
-	
+	return " i am in root"
 
 @app.route('/v1/expenses', methods= ['POST'])
 def set_post():
 	try:
-		CreateDB(hostname = "mysqlContainer1")
+		CreateDB(hostname = "mysqlserver")
 		db.create_all()
 		request_data = request.get_json(force=True)
 
@@ -137,18 +122,16 @@ def setup4(expense_id):
 def app_status():
 	return json.dumps({'server_info':application.config['SQLALCHEMY_DATABASE_URI']})
 
-
-# @CircuitBreaker(max_failure_to_open=3, reset_timeout=3)
-# def dependency_call():
-# 	raise Exception(MY_EXCEPTION)
-
 # run app service 
 if __name__ == "__main__":
+	print "before calling port"
 	def port():
-		r = redis.Redis(host='redisContainer1',port=6379 , db=0)
-		r.rpush('ports',5000)
+		r = redis.Redis(host='pedantic_davinci',port=6379)
+		r.rpush('ports',5001)
 		return "5000 is inserted in redis"
-	port()
+	port()																																								
+	
+	print "after calling port"
 
-	app.run(host="0.0.0.0",port =5000, debug=True,use_reloader=False)
+	app.run(host="0.0.0.0", port=5001, debug=True, use_reloader=False)
 

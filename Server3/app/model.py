@@ -8,11 +8,11 @@ from flask_migrate import Migrate, MigrateCommand
 # Database Configurations
 app = Flask(__name__)
 DATABASE = 'newtest'
-PASSWORD = 'password'
+PASSWORD = 'praveen'
 USER = 'root'
-HOSTNAME = 'mysqlContainer1'
+HOSTNAME = 'localhost'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@mysqlContainer1/newtest'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:p@ssw0rd123@ecstatic_aryabhata/newtest'
 db = SQLAlchemy(app)
 
 # Database migration command line
@@ -53,11 +53,10 @@ class CreateDB():
 		if hostname != None:	
 			HOSTNAME = hostname
 		import sqlalchemy
-		engine = sqlalchemy.create_engine('mysql://root:password@mysqlContainer1') # connect to server
-		engine.execute("CREATE DATABASE IF NOT EXISTS %s "%(DATABASE)) #create db
+		engine = sqlalchemy.create_engine('mysql://root:p@ssw0rd123@ecstatic_aryabhata') # connect to server
+		engine.execute("CREATE DATABASE IF NOT EXISTS newtest ") #create db
 
 if __name__ == '__main__':
-	
 	manager.run()
 
 

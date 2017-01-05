@@ -8,11 +8,11 @@ from flask_migrate import Migrate, MigrateCommand
 # Database Configurations
 app = Flask(__name__)
 DATABASE = 'newtest'
-PASSWORD = 'bhanu'
+PASSWORD = 'praveen'
 USER = 'root'
 HOSTNAME = 'localhost'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:bhanu@localhost/newtest'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:p@ssw0rd123@ecstatic_aryabhata/newtest'
 db = SQLAlchemy(app)
 
 # Database migration command line
@@ -34,9 +34,8 @@ class User(db.Model):
 	status=db.Column(db.String(100), unique=False)
 	decision_date = db.Column(db.String(100), unique=False)
 	
-	def __init__(self,id,name, email, category, description, link, estimated_costs, submit_date, status, decision_date):
+	def __init__(self,name, email, category, description, link, estimated_costs, submit_date, status, decision_date):
 		# initialize columns
-		self.id = id
 		self.name = name
 		self.email = email
 		self.category = category
@@ -54,11 +53,10 @@ class CreateDB():
 		if hostname != None:	
 			HOSTNAME = hostname
 		import sqlalchemy
-		engine = sqlalchemy.create_engine('mysql+pymysql://root:bhanu@localhost') # connect to server
-		engine.execute("CREATE DATABASE IF NOT EXISTS %s "%(DATABASE)) #create db
+		engine = sqlalchemy.create_engine('mysql://root:p@ssw0rd123@ecstatic_aryabhata') # connect to server
+		engine.execute("CREATE DATABASE IF NOT EXISTS newtest ") #create db
 
 if __name__ == '__main__':
-	
 	manager.run()
 
 
